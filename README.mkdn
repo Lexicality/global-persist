@@ -1,0 +1,6 @@
+Global Persistence
+==================
+
+It makes the Sandbox persist right click menu thing happen across all gamemodes
+
+This code is not licensed because it makes use of source code from https://github.com/garrynewman/garrysmod which is also unlicensed.
