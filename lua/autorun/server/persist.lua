@@ -6,8 +6,6 @@ local gm = engine.ActiveGamemode():lower();
 if (gm == "sandbox" or gm == "darkrp") then
 	return;
 end
-include("vehicles.lua");
-
 
 if (not ConVarExists("sbox_persist")) then
 	CreateConVar(
