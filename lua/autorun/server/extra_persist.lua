@@ -5,8 +5,8 @@
 --]]
 local cvar = CreateConVar(
 	"sbox_persist_cleanup",
-	"",
-	0,
+	"1",
+	FCVAR_ARCHIVE,
 	"Set to anything but 0 to enable persisting through cleanups"
 );
 
