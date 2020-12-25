@@ -1,8 +1,8 @@
---[[
-	Sandbox Vehicle Spawning
-	Copyright (c) 2008-2016 Garry Newman
---]]
-
+-- LuaFormatter off
+--
+-- Sandbox Vehicle Spawning
+-- Copyright (c) 2008-2016 Garry Newman
+--
 local gm = engine.ActiveGamemode():lower();
 if (gm == "sandbox" or gm == "darkrp") then
 	return;
@@ -68,3 +68,5 @@ local function VehicleMemDupe( Player, Entity, Data )
 
 end
 duplicator.RegisterEntityModifier( "VehicleMemDupe", VehicleMemDupe )
+
+-- LuaFormatter on

@@ -1,11 +1,13 @@
---[[
-	GMod Base Entity
-	Copyright (c) 2008-2016 Garry Newman
---]]
+-- LuaFormatter off
+--
+-- GMod Base Entity
+-- Copyright (c) 2008-2016 Garry Newman
+--
 local gm = engine.ActiveGamemode():lower();
 if (gm == "sandbox" or gm == "darkrp") then
 	return;
 end
+
 -- Don't do anything if we already have an entity
 if (scripted_ents.Get("base_gmodentity")) then
 	return;
@@ -100,3 +102,5 @@ function ENT:GetPlayerName()
 end
 
 scripted_ents.Register(ENT, "base_gmodentity");
+
+-- LuaFormatter on

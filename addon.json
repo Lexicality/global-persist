@@ -1,21 +1,19 @@
 {
-	"title"   : "Global Persistence",
-	"author"  : "Lex Robinson",
-	"contact" : "lexi@lexi.org.uk",
-	"updated" : "June '16",
-	"license" : "MIT",
-	"type"    : "tool",
-	"tags"    : ["roleplay", "build"],
-	"ignore"  :
-	[
-		"LICENSE",
+	"title": "Global Persistence",
+	"author": "Lex Robinson",
+	"contact": "lexi@lexi.org.uk",
+	"updated": "December 2020",
+	"type": "tool",
+	"tags": ["roleplay", "build"],
+	"workshopid": 715762890,
+	"ignore": [
 		"*.mkdn",
 		".git*",
-		"*.sublime*",
 		"*.jpg",
 		"*.psd",
 		"*.png",
 		"*.gma",
-		"workshop_screenies/*"
+		"screenshots/*",
+		"libgmod/*"
 	]
 }

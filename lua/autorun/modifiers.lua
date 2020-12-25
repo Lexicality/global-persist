@@ -1,11 +1,13 @@
---[[
-	Sandbox Tools
-	Copyright (c) 2008-2016 Garry Newman
---]]
+-- LuaFormatter off
+--
+-- Sandbox Tools
+-- Copyright (c) 2008-2016 Garry Newman
+--
 local gm = engine.ActiveGamemode():lower();
 if (gm == "sandbox" or gm == "darkrp") then
 	return;
 end
+
 local function SetColour( ply, ent, data )
 
 	--
@@ -104,3 +106,5 @@ local function SetEyeTarget( Player, Entity, Data )
 
 end
 duplicator.RegisterEntityModifier( "eyetarget", SetEyeTarget )
+
+-- LuaFormatter on

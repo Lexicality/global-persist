@@ -3,9 +3,9 @@ Global Persistence
 
 It makes the Sandbox persist right click menu thing happen across all gamemodes
 
-This code is not licensed because it makes use of source code from [garrynewman/garrysmod][gmod] which is also unlicensed.
+This code is not licensed because it makes use of source code from [Facepunch/garrysmod][gmod] which is also unlicensed.
 
 This addon is available on the [Steam Workshop][workshop].
 
-[gmod]: https://github.com/garrynewman/garrysmod
+[gmod]: https://github.com/Facepunch/garrysmod
 [workshop]: http://steamcommunity.com/sharedfiles/filedetails/?id=715762890

@@ -1,7 +1,8 @@
---[[
-	Sandbox Persistence
-	Copyright (c) 2008-2016 Garry Newman
---]]
+-- LuaFormatter off
+--
+-- Sandbox Persistence
+-- Copyright (c) 2008-2016 Garry Newman
+--
 local gm = engine.ActiveGamemode():lower();
 if (gm == "sandbox" or gm == "darkrp") then
 	return;
@@ -45,3 +46,5 @@ hook.Add( "InitPostEntity", "PersistenceInit", function()
 	hook.Run( "PersistenceLoad", PersistPage );
 
 end )
+
+-- LuaFormatter on
