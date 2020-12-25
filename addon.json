@@ -14,6 +14,7 @@
 		"*.png",
 		"*.gma",
 		"screenshots/*",
-		"libgmod/*"
+		"libgmod/*",
+		"_build/*"
 	]
 }
