@@ -1,25 +1,25 @@
 -- LuaFormatter off
 --
 -- Sandbox Vehicle Spawning
--- Copyright (c) 2008-2016 Garry Newman
+-- Copyright (c) 2008-2020 Facepunch Studios
 --
 local gm = engine.ActiveGamemode():lower();
 if (gm == "sandbox" or gm == "darkrp") then
 	return;
 end
 
-local function MakeVehicle( Player, Pos, Ang, Model, Class, VName, VTable, data )
+local function MakeVehicle( ply, Pos, Ang, model, Class, VName, VTable, data )
 
 	local Ent = ents.Create( Class )
-	if ( not Ent ) then return NULL end
+	if ( not IsValid( Ent ) ) then return NULL end
 
 	duplicator.DoGeneric( Ent, data )
 
-	Ent:SetModel( Model )
+	Ent:SetModel( model )
 
 	-- Fallback vehiclescripts for HL2 maps ( dupe support )
-	if ( Model == "models/buggy.mdl" ) then Ent:SetKeyValue( "vehiclescript", "scripts/vehicles/jeep_test.txt" ) end
-	if ( Model == "models/vehicle.mdl" ) then Ent:SetKeyValue( "vehiclescript", "scripts/vehicles/jalopy.txt" ) end
+	if ( model == "models/buggy.mdl" ) then Ent:SetKeyValue( "vehiclescript", "scripts/vehicles/jeep_test.txt" ) end
+	if ( model == "models/vehicle.mdl" ) then Ent:SetKeyValue( "vehiclescript", "scripts/vehicles/jalopy.txt" ) end
 
 	-- Fill in the keyvalues if we have them
 	if ( VTable and VTable.KeyValues ) then
@@ -28,10 +28,10 @@ local function MakeVehicle( Player, Pos, Ang, Model, Class, VName, VTable, data 
 			local kLower = string.lower( k )
 
 			if ( kLower == "vehiclescript" or
-			     kLower == "limitview"     or
-			     kLower == "vehiclelocked" or
-			     kLower == "cargovisible"  or
-			     kLower == "enablegun" )
+				 kLower == "limitview"     or
+				 kLower == "vehiclelocked" or
+				 kLower == "cargovisible"  or
+				 kLower == "enablegun" )
 			then
 				Ent:SetKeyValue( k, v )
 			end
@@ -53,6 +53,10 @@ local function MakeVehicle( Player, Pos, Ang, Model, Class, VName, VTable, data 
 	-- actually uses a different class than is reported by GetClass
 	Ent.ClassOverride = Class
 
+	if ( IsValid( ply ) ) then
+		gamemode.Call( "PlayerSpawnedVehicle", ply, Ent )
+	end
+
 	return Ent
 
 end
@@ -62,9 +66,9 @@ duplicator.RegisterEntityClass( "prop_vehicle_jeep", MakeVehicle, "Pos", "Ang", 
 duplicator.RegisterEntityClass( "prop_vehicle_airboat", MakeVehicle, "Pos", "Ang", "Model", "Class", "VehicleName", "VehicleTable", "Data" )
 duplicator.RegisterEntityClass( "prop_vehicle_prisoner_pod", MakeVehicle, "Pos", "Ang", "Model", "Class", "VehicleName", "VehicleTable", "Data" )
 
-local function VehicleMemDupe( Player, Entity, Data )
+local function VehicleMemDupe( ply, ent, Data )
 
-	table.Merge( Entity, Data )
+	table.Merge( ent, Data )
 
 end
 duplicator.RegisterEntityModifier( "VehicleMemDupe", VehicleMemDupe )

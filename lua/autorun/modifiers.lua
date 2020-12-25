@@ -1,21 +1,27 @@
 -- LuaFormatter off
 --
 -- Sandbox Tools
--- Copyright (c) 2008-2016 Garry Newman
+-- Copyright (c) 2008-2020 Facepunch Studios
 --
 local gm = engine.ActiveGamemode():lower();
 if (gm == "sandbox" or gm == "darkrp") then
 	return;
 end
 
+-----
+--
+-- Colour Tool
+--
+-----
+
 local function SetColour( ply, ent, data )
 
 	--
 	-- If we're trying to make them transparent them make the render mode
-	-- a transparent type. This used to fix in the engine - but made HL:S props invisible(not )
+	-- a transparent type. This used to fix in the engine - but made HL:S props invisible(!)
 	--
-	if ( data.Color and data.Color.a < 255 and data.RenderMode == 0 ) then
-		data.RenderMode = 1
+	if ( data.Color and data.Color.a < 255 and data.RenderMode == RENDERMODE_NORMAL ) then
+		data.RenderMode = RENDERMODE_TRANSCOLOR
 	end
 
 	if ( data.Color ) then ent:SetColor( Color( data.Color.r, data.Color.g, data.Color.b, data.Color.a ) ) end
@@ -28,6 +34,13 @@ local function SetColour( ply, ent, data )
 
 end
 duplicator.RegisterEntityModifier( "colour", SetColour )
+
+-----
+--
+-- Material Tool
+--
+-----
+
 local function SetMaterial( Player, Entity, Data )
 
 	if ( SERVER ) then
@@ -45,15 +58,48 @@ local function SetMaterial( Player, Entity, Data )
 
 end
 duplicator.RegisterEntityModifier( "material", SetMaterial )
-for i = 1, 32 do
 
-	function PlaceDecal_delayed( Player, Entity, Data )
-		timer.Simple( i * 0.05, function() PlaceDecal( Player, Entity, Data ) end )
+-----
+--
+--  Paint Tool
+--
+-----
+
+local function PlaceDecal( ply, ent, data )
+
+	if ( not IsValid( ent ) and not ent:IsWorld() ) then return end
+
+	local bone = ent:GetPhysicsObjectNum( data.bone or 0 )
+	if ( not IsValid( bone ) ) then bone = ent end
+
+	if ( SERVER ) then
+		util.Decal( data.decal, bone:LocalToWorld( data.Pos1 ), bone:LocalToWorld( data.Pos2 ), ply )
+
+		local i = ent.DecalCount or 0
+		i = i + 1
+		duplicator.StoreEntityModifier( ent, "decal" .. i, data )
+		ent.DecalCount = i
 	end
 
-	duplicator.RegisterEntityModifier( "decal" .. i, PlaceDecal_delayed )
+end
+
+--
+-- Register decal duplicator
+--
+for i = 1, 32 do
+
+	duplicator.RegisterEntityModifier( "decal" .. i, function( ply, ent, data )
+		timer.Simple( i * 0.05, function() PlaceDecal( ply, ent, data ) end )
+	end )
 
 end
+
+-----
+--
+--  Trails Tool
+--
+-----
+
 local function SetTrails( ply, ent, data )
 
 	if ( IsValid( ent.SToolTrail ) ) then
@@ -70,17 +116,23 @@ local function SetTrails( ply, ent, data )
 
 	end
 
-	if ( data.StartSize == 0 ) then
+	-- Just don't even bother with invisible trails
+	if ( data.StartSize <= 0 and data.EndSize <= 0 ) then return end
 
-		data.StartSize = 0.0001
+		-- This is here to fix crash exploits
+	if ( not game.SinglePlayer() ) then
+
+		-- Lock down the trail material - only allow what the server allows
+		if ( not list.Contains( "trail_materials", data.Material ) ) then return end
+
+		-- Clamp sizes in multiplayer
+		data.Length = math.Clamp( data.Length, 0.1, 10 )
+		data.EndSize = math.Clamp( data.EndSize, 0, 128 )
+		data.StartSize = math.Clamp( data.StartSize, 0, 128 )
 
 	end
 
-	--
-	-- Lock down the trail material - only allow what the server allows
-	-- This is here to fix a crash exploit
-	--
-	if ( not game.SinglePlayer() and not list.Contains( "trail_materials", data.Material ) ) then return end
+	data.StartSize = math.max( 0.0001, data.StartSize )
 
 	local trail_entity = util.SpriteTrail( ent, 0, data.Color, false, data.StartSize, data.EndSize, data.Length, 1 / ( ( data.StartSize + data.EndSize ) * 0.5 ), data.Material .. ".vmt" )
 
@@ -96,6 +148,13 @@ local function SetTrails( ply, ent, data )
 
 end
 duplicator.RegisterEntityModifier( "trail", SetTrails )
+
+-----
+--
+--  EyePoser Tool
+--
+-----
+
 local function SetEyeTarget( Player, Entity, Data )
 
 	if ( Data.EyeTarget ) then Entity:SetEyeTarget( Data.EyeTarget ) end

@@ -1,7 +1,7 @@
 -- LuaFormatter off
 --
 -- Sandbox Persistence
--- Copyright (c) 2008-2016 Garry Newman
+-- Copyright (c) 2008-2020 Facepunch Studios
 --
 local gm = engine.ActiveGamemode():lower();
 if (gm == "sandbox" or gm == "darkrp") then
@@ -40,10 +40,10 @@ end )
 
 hook.Add( "InitPostEntity", "PersistenceInit", function()
 
-	local PersistPage = GetConVarString( "sbox_persist" )
-	if ( PersistPage == "0" ) then return end
+	local PersistPage = GetConVarString( "sbox_persist" ):Trim()
+	if ( PersistPage == "" ) then return end
 
-	hook.Run( "PersistenceLoad", PersistPage );
+	hook.Run( "PersistenceLoad", PersistPage )
 
 end )
 
