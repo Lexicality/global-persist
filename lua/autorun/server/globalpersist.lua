@@ -17,7 +17,12 @@
 local sbox_perisist_cleanup = CreateConVar(
 	"sbox_persist_cleanup", "1", FCVAR_ARCHIVE,
 	"Prevent map cleanups from deleting persisted props"
-);
+)
+local sbox_perisist_autosave = CreateConVar(
+	"sbox_persist_autosave", "1", FCVAR_ARCHIVE,
+	"When should the game save the persistent state? 0 = never, 1 = in sandbox, 2 = always",
+	0, 2
+)
 
 AddCSLuaFile("sandbox/gamemode/cl_worldtips.lua")
 
@@ -28,9 +33,51 @@ local function setupPersistence()
 	include("sandbox/gamemode/persistence.lua")
 end
 
+local function shouldSave()
+	local setting = sbox_perisist_autosave:GetInt()
+	if setting == 2 then
+		return true
+	elseif setting == 1 then
+		return gmod.GetGamemode().IsSandboxDerived
+	end
+	return false
+end
+
+local function onShutdown()
+	if shouldSave() then
+		hook.Run("PersistenceSave")
+	end
+end
+
+local function onCvarChange(name, old, new)
+	old = old:Trim()
+	new = new:Trim()
+
+	local function onActualChange()
+		if (old == new) then
+			return
+		end
+
+		if shouldSave() then
+			hook.Run("PersistenceSave", old)
+		end
+
+		game.CleanUpMap()
+
+		if (new == "") then
+			return
+		end
+
+		hook.Run("PersistenceLoad", new)
+	end
+
+	-- A timer in case someone tries to rapily change the convar, such as addons with "live typing" or whatever
+	timer.Create("sbox_persist_change_timer", 1, 1, onActualChange)
+end
+
 local function adjustPersistence()
 	hook.Remove("ShutDown", "SavePersistenceOnShutdown")
-	hook.Remove("PersistenceSave", "PersistenceSave")
+	hook.Add("ShutDown", "SavePersistenceOnShutdown", onShutdown)
 
 	local oldLoad = hook.GetTable()["PersistenceLoad"]["PersistenceLoad"]
 	local function onPersistenceLoad(name)
@@ -42,6 +89,8 @@ local function adjustPersistence()
 		timer.Create("sbox_persist_load_timer", 0.1, 1, onTimer)
 	end
 	hook.Add("PersistenceLoad", "PersistenceLoad", onPersistenceLoad)
+
+	cvars.AddChangeCallback("sbox_persist", onCvarChange, "sbox_persist_load")
 end
 
 ---
@@ -83,3 +132,13 @@ local function onPostCleanupMap()
 end
 
 hook.Add("PostCleanupMap", "Global Persistence", onPostCleanupMap)
+
+--- @param ply GPlayer
+local function ccSave(ply)
+	if IsValid(ply) and not ply:IsSuperAdmin() then
+		return
+	end
+
+	hook.Run("PersistenceSave")
+end
+concommand.Add("sbox_persist_save", ccSave, nil, "Save the current persistant state to disk")
