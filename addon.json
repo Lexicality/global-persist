@@ -6,15 +6,15 @@
 	"type": "tool",
 	"tags": ["roleplay", "build"],
 	"workshopid": 715762890,
+	"version": "2.0.0",
 	"ignore": [
-		"*.mkdn",
-		".git*",
 		"*.jpg",
-		"*.psd",
-		"*.png",
-		"*.gma",
-		"screenshots/*",
+		"*.mkdn",
+		".*",
+		"LICENSE",
+		"NOTICE",
+		"_build/*",
 		"libgmod/*",
-		"_build/*"
+		"screenshots/*"
 	]
 }
