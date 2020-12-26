@@ -32,7 +32,9 @@ local function setupEntity(name)
 
 	include("sandbox/entities/entities/" .. name .. ".lua")
 
-	scripted_ents.Register(ENT, name);
+	scripted_ents.Register(ENT, name)
+	baseclass.Set(name, scripted_ents.Get(name))
+
 	_G.ENT = nil
 end
 
