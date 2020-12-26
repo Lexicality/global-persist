@@ -6,7 +6,7 @@
 	"type": "tool",
 	"tags": ["roleplay", "build"],
 	"workshopid": 715762890,
-	"version": "2.0.0",
+	"version": "2.0.1",
 	"ignore": [
 		"*.jpg",
 		"*.mkdn",
