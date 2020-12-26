@@ -141,4 +141,6 @@ local function ccSave(ply)
 
 	hook.Run("PersistenceSave")
 end
-concommand.Add("sbox_persist_save", ccSave, nil, "Save the current persistant state to disk")
+concommand.Add(
+	"sbox_persist_save", ccSave, nil, "Save the current persistant state to disk"
+)
