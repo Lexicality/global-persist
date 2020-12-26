@@ -26,9 +26,22 @@ end
 
 local function setupPersistence()
 	include("sandbox/gamemode/persistence.lua")
-	-- TODO: There should really be a convar here in case people want it
+end
+
+local function adjustPersistence()
 	hook.Remove("ShutDown", "SavePersistenceOnShutdown")
 	hook.Remove("PersistenceSave", "PersistenceSave")
+
+	local oldLoad = hook.GetTable()["PersistenceLoad"]["PersistenceLoad"]
+	local function onPersistenceLoad(name)
+		local function onTimer()
+			oldLoad(name)
+		end
+
+		-- debounce
+		timer.Create("sbox_persist_load_timer", 0.1, 1, onTimer)
+	end
+	hook.Add("PersistenceLoad", "PersistenceLoad", onPersistenceLoad)
 end
 
 ---
@@ -45,13 +58,12 @@ local function setupSandboxDupes()
 end
 
 local function onInitialize()
-	local gm = gmod.GetGamemode()
-	if gm.IsSandboxDerived then
-		return
+	if not gmod.GetGamemode().IsSandboxDerived then
+		setupSandboxDupes()
+		setupPersistence()
 	end
 
-	setupSandboxDupes()
-	setupPersistence()
+	adjustPersistence()
 end
 
 hook.Add("Initialize", "Global Persistence Server", onInitialize)
@@ -70,6 +82,4 @@ local function onPostCleanupMap()
 	hook.Run("PersistenceLoad", PersistPage)
 end
 
-hook.Add(
-	"PostCleanupMap", "Global Persistence", onPostCleanupMap
-)
+hook.Add("PostCleanupMap", "Global Persistence", onPostCleanupMap)
