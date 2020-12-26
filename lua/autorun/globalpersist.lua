@@ -76,6 +76,9 @@ local function onInitialize()
 
 	setupEntity("gmod_balloon")
 	setupTool("balloon")
+
+	-- Wire fixes
+	setupEntity("gmod_button")
 end
 
 hook.Add("Initialize", "Global Persistence Shared", onInitialize)
